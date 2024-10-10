@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -25,10 +26,10 @@ public class EventUpdateServiceTest {
   private EventRepository eventRepository;
 
   @InjectMocks
-  private EventService eventService;
+  private EventServiceImpl eventService;
 
   @Test
-  public void updateEventNameSuccess() {
+  public void updateEventSuccess() {
     LocalDate startDate = LocalDate.now().plusDays(1);
     LocalDate endDate = LocalDate.now().plusDays(30);
     EventDto eventDto = EventDto.builder()
@@ -38,6 +39,7 @@ public class EventUpdateServiceTest {
         .totalTicket(200)
         .build();
 
+    when(eventRepository.findById(any(Long.class))).thenReturn(Optional.of(DataProviderMock.eventMock()));
     when(eventRepository.save(any(Event.class))).thenReturn(DataProviderMock.eventMock());
 
     EventDto eventSaved = eventService.updateEvet(10L, eventDto);
@@ -51,7 +53,7 @@ public class EventUpdateServiceTest {
   }
 
   @Test
-  public void shouldThrowExceptionIfNameExist(){
+  public void shouldThrowExceptionIfNameExist() {
     LocalDate startDate = LocalDate.now().plusDays(1);
     LocalDate endDate = LocalDate.now().plusDays(30);
     EventDto eventDto = EventDto.builder()
@@ -60,9 +62,11 @@ public class EventUpdateServiceTest {
         .endDate(endDate)
         .totalTicket(200)
         .build();
-    
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-    ()-> eventService.updateEvet(10L, eventDto));
+
+    when(eventRepository.findByName(any(String.class))).thenReturn(Optional.of(DataProviderMock.eventMock()));
+
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        () -> eventService.updateEvet(10L, eventDto));
 
     assertEquals("Ya existe un evento con ese nombre", exception.getMessage());
   }
@@ -110,11 +114,66 @@ public class EventUpdateServiceTest {
         .endDate(endDate)
         .totalTicket(50)
         .build();
+    when(eventRepository.findById(any(Long.class))).thenReturn(Optional.of(DataProviderMock.eventMock()));
 
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
         () -> eventService.updateEvet(10L, eventDto));
 
     assertEquals("El total de boletos es menor a los boletos vendidos", exception.getMessage());
+  }
+
+  @Test
+  public void shouldThrowExceptionIfTicketsAreLessThanOne() {
+    LocalDate startDate = LocalDate.now().plusDays(1);
+    LocalDate endDate = LocalDate.now().plusDays(30);
+    EventDto eventDto = EventDto.builder()
+        .name("Event Mock")
+        .startDate(startDate)
+        .endDate(endDate)
+        .totalTicket(0)
+        .build();
+
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        () -> eventService.updateEvet(10L, eventDto));
+
+    assertEquals("El total de boletos debe ser entre 1 y 300", exception.getMessage());
+  }
+
+  @Test
+  public void shouldThrowExceptionIfTicketsAreMoreThan300() {
+    LocalDate startDate = LocalDate.now().plusDays(1);
+    LocalDate endDate = LocalDate.now().plusDays(30);
+    EventDto eventDto = EventDto.builder()
+        .name("Event Mock")
+        .startDate(startDate)
+        .endDate(endDate)
+        .totalTicket(301)
+        .build();
+
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        () -> eventService.updateEvet(10L, eventDto));
+
+    assertEquals("El total de boletos debe ser entre 1 y 300", exception.getMessage());
+  }
+
+  @Test
+  public void shouldThrowExceptionIfEventNotExist() {
+    Long id = 10L;
+    LocalDate startDate = LocalDate.now().plusDays(1);
+    LocalDate endDate = LocalDate.now().plusDays(30);
+    EventDto eventDto = EventDto.builder()
+        .name("Event Mock")
+        .startDate(startDate)
+        .endDate(endDate)
+        .totalTicket(200)
+        .build();
+
+    when(eventRepository.findById(id)).thenReturn(Optional.empty());
+
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        () -> eventService.updateEvet(10L, eventDto));
+
+    assertEquals("El evento no Existe", exception.getMessage());
   }
 
 }

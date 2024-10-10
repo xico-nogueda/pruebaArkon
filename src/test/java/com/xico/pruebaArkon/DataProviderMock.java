@@ -15,6 +15,6 @@ public class DataProviderMock {
   public static Event eventMock(){
     LocalDate startDate = LocalDate.now().plusDays(1);
     LocalDate endDate = LocalDate.now().plusDays(30);
-    return Event.builder().id(10L).name("Evento Mock").startDate(startDate).endDate(endDate).totalTicket(200).build();
+    return Event.builder().id(10L).name("Event Mock").startDate(startDate).endDate(endDate).totalTicket(200).ticketsSold(100).build();
   }
 }

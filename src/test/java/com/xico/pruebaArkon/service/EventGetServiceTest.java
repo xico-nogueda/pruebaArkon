@@ -14,9 +14,6 @@ import java.util.Optional;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,41 +26,40 @@ public class EventGetServiceTest {
   private EventServiceImpl eventService;
 
   @Test
-  public void getEventSuccess(){
+  public void getEventSuccess() {
     Long id = 1L;
     Event eventMock = Event.builder()
-    .id(1L)
-    .name("Evento Mock")
-    .startDate(LocalDate.now().minusDays(30))
-    .endDate(LocalDate.now().minusDays(1))
-    .totalTicket(200)
-    .ticketsSold(100)
-    .build();
+        .id(1L)
+        .name("Evento Mock")
+        .startDate(LocalDate.now().minusDays(30))
+        .endDate(LocalDate.now().minusDays(1))
+        .totalTicket(200)
+        .ticketsSold(100)
+        .build();
 
     when(eventRepository.findById(id)).thenReturn(Optional.of(eventMock));
 
     EventDto eventDto = eventService.getEventById(id);
 
-    assertTrue(eventDto!=null);
-    assertTrue(eventDto.getId()>0);
-    assertTrue(eventDto.getName()!=null);
-    assertTrue(eventDto.getStartDate()!=null);
-    assertTrue(eventDto.getEndDate()!=null);
-    assertTrue(eventDto.getTotalTicket()!=null);
-    assertTrue(eventDto.getTicketsSold()!=null);
+    assertTrue(eventDto != null);
+    assertTrue(eventDto.getId() > 0);
+    assertTrue(eventDto.getName() != null);
+    assertTrue(eventDto.getStartDate() != null);
+    assertTrue(eventDto.getEndDate() != null);
+    assertTrue(eventDto.getTotalTicket() != null);
+    assertTrue(eventDto.getTicketsSold() != null);
   }
 
   @Test
-  public void shouldThrowExceptionIfEventNotExist(){
+  public void shouldThrowExceptionIfEventNotExist() {
     Long id = 1L;
 
     when(eventRepository.findById(id)).thenReturn(Optional.empty());
 
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-      ()->eventService.getEventById(id));
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        () -> eventService.getEventById(id));
 
-      assertEquals("El evento no Existe", exception.getMessage());
-      verify(eventRepository, never()).delete(any(Event.class));
+    assertEquals("El evento no Existe", exception.getMessage());
   }
-  
+
 }

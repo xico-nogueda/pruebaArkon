@@ -16,8 +16,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class EventCreationServiceTest {
@@ -39,13 +38,13 @@ public class EventCreationServiceTest {
         .totalTicket(200)
         .build();
 
-    when(eventRepository.findByName(any(String.class))).thenReturn(Optional.of(DataProviderMock.eventMock()));
+    when(eventRepository.findByName(any(String.class))).thenReturn(Optional.empty());
     when(eventRepository.save(any(Event.class))).thenReturn(DataProviderMock.eventMock());
 
     EventDto eventSaved = eventService.createEvent(eventDto);
 
-    assertDoesNotThrow(()->eventService.createEvent(any(EventDto.class)));
-    verify(eventRepository).save(any(Event.class));
+    assertDoesNotThrow(() -> eventService.createEvent(eventDto));
+    verify(eventRepository, times(2)).save(any(Event.class));
     assertEquals(10L, eventSaved.getId());
     assertEquals("Event Mock", eventSaved.getName());
     assertEquals(startDate, eventSaved.getStartDate());
@@ -54,7 +53,7 @@ public class EventCreationServiceTest {
   }
 
   @Test
-  public void shouldThrowExceptionIfNameExist(){
+  public void shouldThrowExceptionIfNameExist() {
     LocalDate startDate = LocalDate.now().plusDays(1);
     LocalDate endDate = LocalDate.now().plusDays(30);
     EventDto eventDto = EventDto.builder()
@@ -65,9 +64,9 @@ public class EventCreationServiceTest {
         .build();
 
     when(eventRepository.findByName("Event Mock")).thenReturn(Optional.of(DataProviderMock.eventMock()));
-    
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-    ()-> eventService.createEvent(eventDto));
+
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        () -> eventService.createEvent(eventDto));
 
     assertEquals("Ya existe un evento con ese nombre", exception.getMessage());
   }
