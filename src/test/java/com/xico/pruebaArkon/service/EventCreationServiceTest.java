@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,10 +39,12 @@ public class EventCreationServiceTest {
         .totalTicket(200)
         .build();
 
+    when(eventRepository.findByName(any(String.class))).thenReturn(Optional.of(DataProviderMock.eventMock()));
     when(eventRepository.save(any(Event.class))).thenReturn(DataProviderMock.eventMock());
 
     EventDto eventSaved = eventService.createEvent(eventDto);
 
+    assertDoesNotThrow(()->eventService.createEvent(any(EventDto.class)));
     verify(eventRepository).save(any(Event.class));
     assertEquals(10L, eventSaved.getId());
     assertEquals("Event Mock", eventSaved.getName());
@@ -60,6 +63,8 @@ public class EventCreationServiceTest {
         .endDate(endDate)
         .totalTicket(200)
         .build();
+
+    when(eventRepository.findByName("Event Mock")).thenReturn(Optional.of(DataProviderMock.eventMock()));
     
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
     ()-> eventService.createEvent(eventDto));
