@@ -51,7 +51,7 @@ public class EventGetServiceTest {
   }
 
   @Test
-  public void shouldThrowExceptionIfEventNotExist() {
+  public void shouldThrowExceptionIf_eventNotExist() {
     Long id = 1L;
 
     when(eventRepository.findById(id)).thenReturn(Optional.empty());

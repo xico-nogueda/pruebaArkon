@@ -25,7 +25,7 @@ public class EventDeleteServiceTest {
   private EventServiceImpl eventService;
 
   @Test
-  public void deleteEventSuccessWithEndDatePassed() {
+  public void deleteEventSuccess_withEndDatePassed() {
     Long id = 1L;
     Event eventMock = Event.builder()
         .id(1L)
@@ -44,7 +44,7 @@ public class EventDeleteServiceTest {
   }
 
   @Test
-  public void deleteEventSuccessWithNoTicketsSold() {
+  public void deleteEventSuccess_withNoTicketsSold() {
     Long id = 1L;
     Event eventMock = Event.builder()
         .id(1L)
@@ -63,7 +63,7 @@ public class EventDeleteServiceTest {
   }
 
   @Test
-  public void shouldThrowExceptionIfEventNotExist() {
+  public void shouldThrowExceptionIf_eventNotExist() {
     Long id = 1L;
 
     when(eventRepository.findById(id)).thenReturn(Optional.empty());
@@ -76,7 +76,7 @@ public class EventDeleteServiceTest {
   }
 
   @Test
-  public void shouldThrowExceptionIfThereAreTicketsSold() {
+  public void shouldThrowExceptionIf_thereAreTicketsSold() {
     Long id = 1L;
     Event eventMock = Event.builder()
         .id(1L)

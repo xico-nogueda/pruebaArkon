@@ -53,7 +53,7 @@ public class EventCreationServiceTest {
   }
 
   @Test
-  public void shouldThrowExceptionIfNameExist() {
+  public void shouldThrowExceptionIf_nameExist() {
     LocalDate startDate = LocalDate.now().plusDays(1);
     LocalDate endDate = LocalDate.now().plusDays(30);
     EventDto eventDto = EventDto.builder()
@@ -72,7 +72,7 @@ public class EventCreationServiceTest {
   }
 
   @Test
-  public void shouldThrowExceptionIfStartDateIsBeforeCurrentDate() {
+  public void shouldThrowExceptionIf_startDate_isBefore_currentDate() {
     LocalDate startDate = LocalDate.now().minusDays(1);
     LocalDate endDate = LocalDate.now().plusDays(30);
     EventDto eventDto = EventDto.builder()
@@ -89,7 +89,7 @@ public class EventCreationServiceTest {
   }
 
   @Test
-  public void shouldThrowExceptionIfEndDateIsBeforeStartDate() {
+  public void shouldThrowExceptionIf_endDate_isBefore_startDate() {
     LocalDate startDate = LocalDate.now().plusDays(1);
     LocalDate endDate = LocalDate.now().minusDays(10);
     EventDto eventDto = EventDto.builder()
@@ -105,7 +105,7 @@ public class EventCreationServiceTest {
   }
 
   @Test
-  public void shouldThrowExceptionIfTicketsAreLessThanOne() {
+  public void shouldThrowExceptionIf_tickets_areLessThanOne() {
     LocalDate startDate = LocalDate.now().plusDays(1);
     LocalDate endDate = LocalDate.now().plusDays(30);
     EventDto eventDto = EventDto.builder()
@@ -122,7 +122,7 @@ public class EventCreationServiceTest {
   }
 
   @Test
-  public void shouldThrowExceptionIfTicketsAreMoreThan300() {
+  public void shouldThrowExceptionIf_tickets_areMoreThan300() {
     LocalDate startDate = LocalDate.now().plusDays(1);
     LocalDate endDate = LocalDate.now().plusDays(30);
     EventDto eventDto = EventDto.builder()

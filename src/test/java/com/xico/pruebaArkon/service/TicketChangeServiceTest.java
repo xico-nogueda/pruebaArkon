@@ -59,7 +59,7 @@ public class TicketChangeServiceTest {
   }
 
   @Test
-  public void shouldThrowExceptionIf_currentDate_isBefore_ofStarDateOfEvent() {
+  public void shouldThrowExceptionIf_currentDate_isBefore_ofStarDate_ofEvent() {
     Long idTicket = 1L;
     Event eventMock = Event.builder()
         .id(1L)
@@ -87,7 +87,7 @@ public class TicketChangeServiceTest {
   }
 
   @Test
-  public void shouldThrowExceptionIf_currentDate_isAfter_oEndDateOfEvent() {
+  public void shouldThrowExceptionIf_currentDate_isAfter_ofEndDate_ofEvent() {
     Long idTicket = 1L;
     Event eventMock = Event.builder()
         .id(1L)
