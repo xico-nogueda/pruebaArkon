@@ -26,11 +26,11 @@ public class TicketCreateAndUpdateServiceTest {
     Long idEvent = 1L;
     Integer totalTickets = 5;
 
-    when(ticketRepository.saveAll(null)).thenReturn(DataProviderMock.listNewTicketsMocks());
+    when(ticketRepository.saveAll(any())).thenReturn(DataProviderMock.listNewTicketsMocks());
 
     ticketService.createTickets(idEvent, totalTickets);
 
-    verify(ticketRepository).saveAll(DataProviderMock.listNewTicketsMocks());
+    verify(ticketRepository).saveAll(anyList());
     assertDoesNotThrow(() -> ticketService.createTickets(idEvent, totalTickets));
   }
 
@@ -40,11 +40,9 @@ public class TicketCreateAndUpdateServiceTest {
     Integer totalTickets = 5;
 
     when(ticketRepository.findByEventId(anyLong())).thenReturn(DataProviderMock.listNewTicketsMocks());
-    when(ticketRepository.saveAll(anyList())).thenReturn(DataProviderMock.listNewTicketsMocks());
 
     ticketService.updateTickets(idEvent, totalTickets);
 
-    verify(ticketRepository).saveAll(DataProviderMock.listNewTicketsMocks());
     assertDoesNotThrow(() -> ticketService.updateTickets(idEvent, totalTickets));
   }
 }

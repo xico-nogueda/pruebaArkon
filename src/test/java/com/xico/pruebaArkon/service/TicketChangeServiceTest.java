@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -20,7 +21,6 @@ import com.xico.pruebaArkon.DataProviderMock;
 import com.xico.pruebaArkon.dto.TicketDto;
 import com.xico.pruebaArkon.entity.Event;
 import com.xico.pruebaArkon.entity.Ticket;
-import com.xico.pruebaArkon.repository.EventRepository;
 import com.xico.pruebaArkon.repository.TicketRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,8 +28,6 @@ public class TicketChangeServiceTest {
 
   @Mock
   private TicketRepository ticketRepository;
-
-  private EventRepository eventRepository;
 
   @InjectMocks
   private TicketServiceImpl ticketService;
@@ -44,16 +42,26 @@ public class TicketChangeServiceTest {
     TicketDto ticketDto = ticketService.changeTicket(idTicket);
 
     assertDoesNotThrow(() -> ticketService.changeTicket(idTicket));
-    verify(ticketRepository).save(any(Ticket.class));
+    verify(ticketRepository, times(2)).save(any(Ticket.class));
     assertEquals(1L, ticketDto.getId());
     assertEquals(1L, ticketDto.getIdEvent());
     assertTrue(ticketDto.isTicketChanged());
   }
 
   @Test
+  public void shouldThrowExceptionIf_ticketNotFound() {
+    Long idTicket = 1L;
+    when(ticketRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        () -> ticketService.changeTicket(idTicket));
+    assertEquals("El boleto no Existe", exception.getMessage());
+  }
+
+  @Test
   public void shouldThrowExceptionIf_currentDate_isBefore_ofStarDateOfEvent() {
     Long idTicket = 1L;
-    Event event = Event.builder()
+    Event eventMock = Event.builder()
         .id(1L)
         .name("EventMock")
         .startDate(LocalDate.now().plusDays(10))
@@ -61,8 +69,14 @@ public class TicketChangeServiceTest {
         .totalTicket(100)
         .ticketsSold(50)
         .build();
+    Ticket ticketMock = Ticket.builder()
+        .id(1L)
+        .sold(true)
+        .changed(false)
+        .event(eventMock)
+        .build();
 
-    when(eventRepository.findById(anyLong())).thenReturn(Optional.of(event));
+    when(ticketRepository.findById(anyLong())).thenReturn(Optional.of(ticketMock));
 
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
         () -> ticketService.changeTicket(idTicket));
@@ -75,7 +89,7 @@ public class TicketChangeServiceTest {
   @Test
   public void shouldThrowExceptionIf_currentDate_isAfter_oEndDateOfEvent() {
     Long idTicket = 1L;
-    Event event = Event.builder()
+    Event eventMock = Event.builder()
         .id(1L)
         .name("EventMock")
         .startDate(LocalDate.now().minusDays(20))
@@ -83,8 +97,14 @@ public class TicketChangeServiceTest {
         .totalTicket(100)
         .ticketsSold(100)
         .build();
+    Ticket ticketMock = Ticket.builder()
+        .id(1L)
+        .sold(true)
+        .changed(false)
+        .event(eventMock)
+        .build();
 
-    when(eventRepository.findById(anyLong())).thenReturn(Optional.of(event));
+    when(ticketRepository.findById(anyLong())).thenReturn(Optional.of(ticketMock));
 
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
         () -> ticketService.changeTicket(idTicket));

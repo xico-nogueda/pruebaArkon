@@ -29,7 +29,7 @@ public class TicketSellServiceTest {
   private TicketServiceImpl ticketService;
 
   @Test
-  public void sellTicketSuccess(){
+  public void sellTicketSuccess() {
     Long idEvent = 1L;
 
     when(ticketRepository.findByEventId(anyLong())).thenReturn(DataProviderMock.listNewTicketsMocks());
@@ -37,32 +37,34 @@ public class TicketSellServiceTest {
 
     TicketDto ticketSold = ticketService.sellTicket(idEvent);
 
-    assertDoesNotThrow(()->ticketService.sellTicket(idEvent));
+    assertDoesNotThrow(() -> ticketService.sellTicket(idEvent));
     assertEquals(1L, ticketSold.getId());
     assertEquals(1L, ticketSold.getIdEvent());
     assertFalse(ticketSold.isTicketChanged());
   }
 
   @Test
-  public void shouldThrowExceptionIf_thereAreNot_tickets_forEvent(){
+  public void shouldThrowExceptionIf_thereAreNot_tickets_forEvent() {
     Long idEvent = 1L;
 
     when(ticketRepository.findByEventId(anyLong())).thenReturn(List.of());
-    
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-      ()-> ticketService.sellTicket(idEvent));
+
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        () -> ticketService.sellTicket(idEvent));
 
     assertEquals("No existen boletos para el Evento", exception.getMessage());
   }
 
   @Test
-  public void shouldThrowExceptionIf_thereAreNot_ticketsAvailable(){
+  public void shouldThrowExceptionIf_thereAreNot_ticketsAvailable() {
     Long idEvent = 1L;
-    
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-      ()-> ticketService.sellTicket(idEvent));
+
+    when(ticketRepository.findByEventId(anyLong())).thenReturn(DataProviderMock.listTickets_withOut_ticketsAvailable());
+
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        () -> ticketService.sellTicket(idEvent));
 
     assertEquals("No existen boletos disponibles para el Evento elegido", exception.getMessage());
   }
-  
+
 }
