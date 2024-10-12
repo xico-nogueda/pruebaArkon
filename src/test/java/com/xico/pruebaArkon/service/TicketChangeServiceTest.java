@@ -71,7 +71,6 @@ public class TicketChangeServiceTest {
         .build();
     Ticket ticketMock = Ticket.builder()
         .id(1L)
-        .sold(true)
         .changed(false)
         .event(eventMock)
         .build();
@@ -99,7 +98,6 @@ public class TicketChangeServiceTest {
         .build();
     Ticket ticketMock = Ticket.builder()
         .id(1L)
-        .sold(true)
         .changed(false)
         .event(eventMock)
         .build();

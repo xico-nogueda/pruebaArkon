@@ -1,7 +1,5 @@
 package com.xico.pruebaArkon.service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.time.LocalDate;
 
@@ -10,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.xico.pruebaArkon.dto.TicketDto;
 import com.xico.pruebaArkon.entity.Event;
 import com.xico.pruebaArkon.entity.Ticket;
+import com.xico.pruebaArkon.repository.EventRepository;
 import com.xico.pruebaArkon.repository.TicketRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -19,58 +18,24 @@ import lombok.RequiredArgsConstructor;
 public class TicketServiceImpl implements TicketService {
 
   private final TicketRepository ticketRepository;
-
-  @Override
-  public void createTickets(Long idEvent, Integer totalTickets) {
-    Event event = Event.builder().id(idEvent).build();
-    List<Ticket> tickets = new ArrayList<>();
-    for (int i = 0; i < totalTickets; i++) {
-      Ticket ticket = Ticket.builder().changed(false).sold(false).event(event).build();
-      tickets.add(ticket);
-    }
-    ticketRepository.saveAll(tickets);
-  }
-
-  @Override
-  public void updateTickets(Long idEvent, Integer totalTickets) {
-    List<Ticket> tickets = ticketRepository.findByEventId(idEvent);
-    List<Ticket> ticketsSold = tickets.stream().filter(ticket -> ticket.isSold()).toList();
-    List<Ticket> ticketsNotSold = tickets.stream().filter(ticket -> !ticket.isSold()).toList();
-    int difference = totalTickets - ticketsSold.size();
-
-    if (tickets.size() > totalTickets) {
-      for (int i = 1; i <= difference; i++) {
-        Ticket ticket = ticketsNotSold.get(ticketsNotSold.size() - i);
-        ticketRepository.delete(ticket);
-      }
-    } else {
-      Event event = Event.builder().id(idEvent).build();
-      List<Ticket> ticketsNew = new ArrayList<>();
-      for (int i = 1; i <= difference; i++) {
-        Ticket ticket = Ticket.builder().changed(false).sold(false).event(event).build();
-        ticketsNew.add(ticket);
-      }
-      ticketRepository.saveAll(ticketsNew);
-    }
-  }
+  private final EventRepository eventRepository;
 
   @Override
   public TicketDto sellTicket(Long idEvent) {
-    List<Ticket> tickets = ticketRepository.findByEventId(idEvent);
-    if (tickets.isEmpty()) {
-      throw new IllegalArgumentException("No existen boletos para el Evento");
+    Optional<Event> eventOp = eventRepository.findById(idEvent);
+    if (!eventOp.isPresent()) {
+      throw new IllegalArgumentException("El evento no Existe");
     }
-    List<Ticket> ticketsNotSold = tickets.stream().filter(ticket -> !ticket.isSold()).toList();
-    if (ticketsNotSold.isEmpty()) {
+    
+    Event event = eventOp.get();
+    if (!(event.getTotalTicket() > event.getTicketsSold())) {
       throw new IllegalArgumentException("No existen boletos disponibles para el Evento elegido");
     }
-    Ticket ticketToSell = ticketsNotSold.get(0);
-    ticketToSell.setSold(true);
+    Ticket ticketToSell = Ticket.builder().changed(false).event(event).build();
     Ticket ticketSold = ticketRepository.save(ticketToSell);
 
     return TicketDto.builder()
         .id(ticketSold.getId())
-        .ticketChanged(ticketSold.isChanged())
         .idEvent(ticketSold.getEvent().getId())
         .build();
 
