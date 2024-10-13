@@ -31,7 +31,7 @@ public class TicketServiceImpl implements TicketService {
     if (!(event.getTotalTicket() > event.getTicketsSold())) {
       throw new IllegalArgumentException("No existen boletos disponibles para el Evento elegido");
     }
-    Ticket ticketToSell = Ticket.builder().changed(false).event(event).build();
+    Ticket ticketToSell = Ticket.builder().redeemed(false).event(event).build();
     Ticket ticketSold = ticketRepository.save(ticketToSell);
 
     return TicketDto.builder()
@@ -55,12 +55,12 @@ public class TicketServiceImpl implements TicketService {
       throw new IllegalArgumentException("Un boleto solo puede ser canjeado 1 vez y únicamente dentro de los limites de inicio y fin del evento al que pertenece");
     }
 
-    ticketToChange.setChanged(true);
+    ticketToChange.setRedeemed(true);
     Ticket tiketChanged = ticketRepository.save(ticketToChange);
 
     return TicketDto.builder()
         .id(tiketChanged.getId())
-        .ticketChanged(tiketChanged.isChanged())
+        .redeemed(tiketChanged.isRedeemed())
         .idEvent(tiketChanged.getEvent().getId())
         .build();
   }

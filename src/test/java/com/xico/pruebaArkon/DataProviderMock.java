@@ -24,16 +24,16 @@ public class DataProviderMock {
   public static List<Ticket> listNewTicketsMocks() {
     Event event = Event.builder().id(1L).build();
     return List.of(
-        new Ticket(1L, false, false, event),
-        new Ticket(2L, false, false, event),
-        new Ticket(3L, false, false, event),
-        new Ticket(4L, false, false, event),
-        new Ticket(5L, false, false, event));
+        new Ticket(1L, false, event),
+        new Ticket(2L, false, event),
+        new Ticket(3L, false, event),
+        new Ticket(4L, false, event),
+        new Ticket(5L, false, event));
   }
 
   public static Ticket ticketSoldMock() {
     Event event = Event.builder().id(1L).build();
-    return new Ticket(1L, false, true, event);
+    return new Ticket(1L, false, event);
   }
 
   public static Ticket ticketToChangeMock() {
@@ -44,7 +44,7 @@ public class DataProviderMock {
         .totalTicket(100)
         .ticketsSold(50)
         .build();
-    return new Ticket(1L, false, true, event);
+    return new Ticket(1L, false, event);
   }
 
   public static Ticket ticketChangedMock() {
@@ -55,7 +55,7 @@ public class DataProviderMock {
         .totalTicket(100)
         .ticketsSold(50)
         .build();
-    return new Ticket(1L, true, true, event);
+    return new Ticket(1L, true, event);
   }
 
   public static List<Ticket> listTickets_withOut_ticketsAvailable() {
@@ -68,10 +68,10 @@ public class DataProviderMock {
         .build();
 
     return List.of(
-        new Ticket(1L, false, true, event),
-        new Ticket(2L, false, true, event),
-        new Ticket(3L, false, true, event),
-        new Ticket(4L, false, true, event),
-        new Ticket(5L, false, true, event));
+        new Ticket(1L, true, event),
+        new Ticket(2L, true, event),
+        new Ticket(3L, true, event),
+        new Ticket(4L, true, event),
+        new Ticket(5L, true, event));
   }
 }

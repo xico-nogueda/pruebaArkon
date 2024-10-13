@@ -11,17 +11,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-@Table(name = "event")
+@Table(name = "ticket")
 public class Ticket {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "changed", nullable = false)
-  private boolean changed;
-
-  @Column(name = "sold", nullable = false)
-  private boolean sold;
+  @Column(name = "redeemed", nullable = false)
+  private boolean redeemed;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "event_id")

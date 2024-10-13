@@ -45,7 +45,7 @@ public class TicketChangeServiceTest {
     verify(ticketRepository, times(2)).save(any(Ticket.class));
     assertEquals(1L, ticketDto.getId());
     assertEquals(1L, ticketDto.getIdEvent());
-    assertTrue(ticketDto.isTicketChanged());
+    assertTrue(ticketDto.isRedeemed());
   }
 
   @Test
@@ -71,7 +71,7 @@ public class TicketChangeServiceTest {
         .build();
     Ticket ticketMock = Ticket.builder()
         .id(1L)
-        .changed(false)
+        .redeemed(false)
         .event(eventMock)
         .build();
 
@@ -98,7 +98,7 @@ public class TicketChangeServiceTest {
         .build();
     Ticket ticketMock = Ticket.builder()
         .id(1L)
-        .changed(false)
+        .redeemed(false)
         .event(eventMock)
         .build();
 

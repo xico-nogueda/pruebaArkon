@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TicketDto {
   private Long id;
-  private boolean ticketChanged;
+  private boolean redeemed;
   private Long idEvent;
 }

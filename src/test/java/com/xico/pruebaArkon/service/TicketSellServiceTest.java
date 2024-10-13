@@ -55,7 +55,7 @@ public class TicketSellServiceTest {
     assertDoesNotThrow(() -> ticketService.sellTicket(idEvent));
     assertEquals(1L, ticketSold.getId());
     assertEquals(1L, ticketSold.getIdEvent());
-    assertFalse(ticketSold.isTicketChanged());
+    assertFalse(ticketSold.isRedeemed());
   }
 
   @Test
